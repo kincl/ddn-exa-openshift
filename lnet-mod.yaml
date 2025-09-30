@@ -10,8 +10,8 @@ spec:
         dirName: /opt
         modulesLoadingOrder:
           # - ko2iblnd  # for Infiniband network
-          - ksocklnd
           - lnet
+          - ksocklnd
           # - libcfs  # for Infiniband network
 
       kernelMappings: # At least one item is required
@@ -19,6 +19,8 @@ spec:
         - regexp: "^.+$"
           containerImage: "image-registry.openshift-image-registry.svc:5000/openshift-kmm/lustre-client-moduleloader:${KERNEL_FULL_VERSION}"
           build:
+            secrets:
+              - name: etc-pki-entitlement
             baseImageRegistryTLS:
               # Optional and not recommended! If true, the build will be allowed to pull the image in the Dockerfile's
               # FROM instruction using plain HTTP.

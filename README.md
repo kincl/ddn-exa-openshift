@@ -29,6 +29,9 @@ oc start-build -n openshift-kmm exa-client --from-dir . --follow
 Use this configmap for the build
 
 ```bash
+oc get secret -n openshift-config-managed etc-pki-entitlement -o yaml | grep -v "namespace:" > etc-pki-entitlement.yaml
+oc apply -n openshift-kmm -f etc-pki-entitlement.yaml
+
 oc apply -n openshift-kmm -f lustre-dockerfile-configmap.yaml
 ```
 

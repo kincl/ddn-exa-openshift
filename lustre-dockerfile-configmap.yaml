@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lustre-ci-dockerfile
+data:
+  dockerfile: |
+    FROM image-registry.openshift-image-registry.svc:5000/openshift-kmm/exa-client:latest as source
+
+    ARG DTK_AUTO
+    FROM ${DTK_AUTO} as builder
+    ARG KERNEL_VERSION
+    WORKDIR /build/
+    ENV SMDEV_CONTAINER_OFF=1
+
+    COPY --from=source /source/exa-client.tar.gz exa-client.tar.gz
+
+    RUN tar -xvf exa-client.tar.gz && cd exa-client && ./exa_client_deploy.py -i
+    RUN yum -y install rpms/*.rpm
+    RUN mkdir -p /opt/lib && \
+        cp -r /lib/modules /opt/lib/modules
+    RUN depmod -b /opt
